@@ -1,0 +1,8 @@
+{
+    "FunctionName": "main-ask-lambda-production",
+    "Environment": {
+	"Variables": {
+	   "DISCRIMINATOR_URI": "http://54.152.20.229"
+    	}
+    }
+}
