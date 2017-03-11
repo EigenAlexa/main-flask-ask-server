@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from flask_ask import Ask, statement, question
+from flask_ask import (Ask, statement, question, session as ask_session)
 import os
 import requests
 
@@ -14,7 +14,10 @@ def new_session():
 @ask.intent("AllIntent", convert={'All': str})
 def next_round(All):
     try:
-        response = requests.post(os.environ['DISCRIMINATOR_URI'], data={'text': All})
+        response = requests.post(os.environ['DISCRIMINATOR_URI'],
+                                 data={'text':All,
+                                       'sessionId':ask_session['sessionId'],
+                                       'user':ask_session['user']['userId']})
         return question(response.text)
     except (KeyError, requests.exceptions.RequestException):
         return statement("I'm sorry. My servers aren't available at this time.")
