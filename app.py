@@ -8,12 +8,13 @@ ask = Ask(app, "/")
 
 @ask.launch
 def new_session():
-    welcome_msg = "hello"
-    return statement(welcome_msg)
+    welcome_msg = "hi! This is an alexa prize social bot, I can talk about many things, what would you like to talk about?"
+    return question(welcome_msg)
 
 @ask.intent("AllIntent", convert={'All': str})
 def next_round(All):
     try:
+        print("sending to discriminator")
         response = requests.post(os.environ['DISCRIMINATOR_URI'],
                                  data={'text':All,
                                        'sessionId':ask_session['sessionId'],
