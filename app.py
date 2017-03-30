@@ -30,9 +30,5 @@ def stop():
 def help():
 	return question("I'm Eigen, ask me anything.")
 
-@ask.session_ended
-def session_ended():
-    return statement("goodbye")
-
 if __name__ == '__main__':
     app.run(debug=True)
