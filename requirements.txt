@@ -1,4 +1,1 @@
-Flask==0.12
-Flask-Ask==0.8.2
 requests==2.12.4
-zappa==0.32.1
