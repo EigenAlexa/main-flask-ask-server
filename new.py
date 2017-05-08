@@ -3,7 +3,7 @@ import requests
 
 # --------------- Helpers that build all of the responses ----------------------
 
-def build_speechlet_response(output, should_end_session):
+def build_speechlet_response(output, should_end_session, reprompt=""):
     return { 'version': '1.0',
         response: {
             'outputSpeech': {
@@ -13,7 +13,7 @@ def build_speechlet_response(output, should_end_session):
             'reprompt': {
                 'outputSpeech': {
                     'type': 'PlainText',
-                    'text': "",
+                    'text': reprompt,
                 }
             },
             'shouldEndSession': should_end_session
