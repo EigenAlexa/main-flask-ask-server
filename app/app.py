@@ -2,8 +2,10 @@ from __future__ import print_function
 import requests
 import os
 # --------------- Helpers that build all of the responses ----------------------
-
-def build_speechlet_response(output, should_end_session):
+DEFAULT_REPROMPT="What would you like to talk about?"
+`
+def build_speechlet_response(output, should_end_session,
+                             reprompt=DEFAULT_REPROMPT):
     return { 'version': '1.0',
         'response': {
             'outputSpeech': {
@@ -34,7 +36,7 @@ def get_welcome_response():
     # If the user either does not reply to the welcome message or says something
     # that is not understood, they will be prompted again with this text.
     should_end_session = False
-    return build_speechlet_response( speech_output, should_end_session)
+    return build_speechlet_response( speech_output, should_end_session, "")
 
 
 def handle_session_end_request():
@@ -42,7 +44,7 @@ def handle_session_end_request():
     speech_output = ""
     # Setting this to true ends the session and exits the skill.
     should_end_session = True
-    return build_speechlet_response( speech_output, should_end_session)
+    return build_speechlet_response( speech_output, should_end_session, "")
 
 def next_round(intent, session):
     print(intent)
@@ -50,7 +52,8 @@ def next_round(intent, session):
         response = requests.post(os.environ['DISCRIMINATOR_URI'], data = {'text': intent['slots']['All']['value'], 'sessionId': session['sessionId'], 'user': session['user']['userId']})
         return build_speechlet_response( response.text, False)
     except (KeyError, requests.exceptions.RequestException):
-        return build_speechlet_response( "My servers aren't available at this time.", False)
+        return build_speechlet_response( "My servers aren't available at this
+                                        time.", False, "")
 # --------------- Events ------------------
 
 def on_session_started(session_started_request, session):
