@@ -3,7 +3,7 @@ import requests
 import os
 # --------------- Helpers that build all of the responses ----------------------
 DEFAULT_REPROMPT="What would you like to talk about?"
-`
+
 def build_speechlet_response(output, should_end_session,
                              reprompt=DEFAULT_REPROMPT):
     return { 'version': '1.0',
@@ -15,7 +15,7 @@ def build_speechlet_response(output, should_end_session,
             'reprompt': {
                 'outputSpeech': {
                     'type': 'PlainText',
-                    'text': "",
+                    'text': reprompt
                 }
             },
             'shouldEndSession': should_end_session
@@ -52,8 +52,7 @@ def next_round(intent, session):
         response = requests.post(os.environ['DISCRIMINATOR_URI'], data = {'text': intent['slots']['All']['value'], 'sessionId': session['sessionId'], 'user': session['user']['userId']})
         return build_speechlet_response( response.text, False)
     except (KeyError, requests.exceptions.RequestException):
-        return build_speechlet_response( "My servers aren't available at this
-                                        time.", False, "")
+        return build_speechlet_response( "My servers aren't available at this time.", False, "")
 # --------------- Events ------------------
 
 def on_session_started(session_started_request, session):
