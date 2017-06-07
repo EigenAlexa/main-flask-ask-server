@@ -49,7 +49,14 @@ def handle_session_end_request():
 def next_round(intent, session):
     print(intent)
     try:
-        response = requests.post(os.environ['DISCRIMINATOR_URI'], data = {'text': intent['slots']['All']['value'], 'sessionId': session['sessionId'], 'user': session['user']['userId']})
+        if 'body' in intent and 'conversationId' in intent['body']:
+            convid = intent['body']['conversationId']
+        else:
+            convid = session['sessionId']
+        response = requests.post(os.environ['DISCRIMINATOR_URI'], data =
+                                 {'text': intent['slots']['All']['value'],
+                                  'convid': convid,
+                                  'userid': session['user']['userId']})
         return build_speechlet_response( response.text, False)
     except (KeyError, requests.exceptions.RequestException):
         return build_speechlet_response( "My servers aren't available at this time.", False, "")
@@ -115,6 +122,7 @@ def lambda_handler(event, context):
     prevent someone else from configuring a skill that sends requests to this
     function.
     """
+    print("Context", event['context'])
     if (event['session']['application']['applicationId'] !=
              "amzn1.ask.skill.52e109d3-c413-4d88-821d-25414a12fa9a"):
          raise ValueError("Invalid Application ID")
@@ -122,7 +130,6 @@ def lambda_handler(event, context):
     if event['session']['new']:
         on_session_started({'requestId': event['request']['requestId']},
                            event['session'])
-
     if event['request']['type'] == "LaunchRequest":
         return on_launch(event['request'], event['session'])
     elif event['request']['type'] == "IntentRequest":
